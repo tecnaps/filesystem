@@ -13,7 +13,6 @@
 void main(){
 
     struct BPB BPB; 
-    //struct AUX AUX;
     struct METADATA meta;
     struct CLUSTER_ENTRY clus;
     char* SecBuff = NULL;
@@ -23,8 +22,6 @@ void main(){
     initClus(&clus);
     
     meta.Filename = "FAT32disk.img";
-
-    //readBoot(&AUX);
     
     setBPB(&BPB, meta.Filename);
 
@@ -70,8 +67,7 @@ void main(){
         SecBuff = NULL;
 
     } else {                                                        // FAT32 root directory
-
-        DIR* root;
+        
         root = FetchRootDirectory2(&meta, &BPB);
 
         // cleanup

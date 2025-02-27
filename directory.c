@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 #include "FATentry.h"
 #include "directory.h"
@@ -22,8 +23,6 @@ DIR* FetchRootDirectory2(METADATA* meta, BPB* BPB){
 
     while (!(clus -> clusterNumber >= 0x0FFFFFF8) && clus -> clusterNumber != 0){
 
-        printf("%u\n", clus -> clusterNumber);
-
         chain[i] = clus -> clusterNumber;
 
         calcFATEntry(BPB, meta, clus);
@@ -37,13 +36,8 @@ DIR* FetchRootDirectory2(METADATA* meta, BPB* BPB){
         clus -> clusterNumber = clus -> FAT32ClusEntryVal;
         i++;
     }
-    int j = 0;
-    while(j< i){
-        printf("%u \n", chain[i]);
-        j++;
-    }
 
-    j = 0;
+    int j = 0;
 
     while (j < i){
 
@@ -56,25 +50,19 @@ DIR* FetchRootDirectory2(METADATA* meta, BPB* BPB){
         // fetch root directory entry
     
         if (j == 0){
-            printf("test\n");
             directory = FetchRootDirectory(meta, SecBuff);
-            printf("test2\n");
             start = directory;
+            if (start == NULL)
+                exit(-1);
+
         }
         else {
-            printf("test3\n");
             directory -> next = FetchRootDirectory(meta, SecBuff);
             directory -> next -> previous = directory;
         }
-
-        while (directory -> next != NULL){
-            printf("%s\n", directory -> entry -> DIR_NAME);
-            directory = directory -> next;
-        }
-        BYTE DIR_Attr;                      //  11      1
-
-    return start;
+        j++;
     }
+    return start;
 }
 
 
@@ -120,8 +108,6 @@ DIR* FetchRootDirectory(METADATA* meta, char* SecBuff){
 
         for (int k = 0; k < 11; k++)
             directory -> entry -> DIR_NAME[k] = SecBuff[j+k];
-        
-        printf("%s\n", directory -> entry -> DIR_NAME);
 
         directory -> entry -> DIR_Attr = SecBuff[j+11];
         directory -> entry -> DIR_NTRes = SecBuff[j+12];
